@@ -17,8 +17,9 @@ def count_safe_reports(data):
     safe_count = sum(1 for report in reports if is_safe_with_dampener(report))
     return safe_count
 
-with open('advent02.txt', 'r') as file:
-    data = file.read()
+if __name__ == '__main__':
+    with open('advent02.txt', 'r') as file:
+        data = file.read()
 
-safe_reports_count = count_safe_reports(data)
-print(f"Number of safe reports: {safe_reports_count}")
+    safe_reports_count = count_safe_reports(data)
+    print(f"Number of safe reports: {safe_reports_count}")

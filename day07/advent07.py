@@ -37,7 +37,8 @@ def solve_part2(input_text):
         if test in possible: result += test
     return result
 
-with open('advent07.txt') as f:
-    data = f.read()
-    print(f"Part 1: {solve_part1(data)}")
-    print(f"Part 2: {solve_part2(data)}")
+if __name__ == '__main__':
+    with open('advent07.txt') as f:
+        data = f.read()
+        print(f"Part 1: {solve_part1(data)}")
+        print(f"Part 2: {solve_part2(data)}")

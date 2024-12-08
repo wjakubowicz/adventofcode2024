@@ -22,7 +22,8 @@ def part2(data):
             
     return result
 
-with open('advent03.txt') as f:
-	data = f.read()
-	print(part1(data))
-	print(part2(data))
+if __name__ == '__main__':
+    with open('advent03.txt') as f:
+        data = f.read()
+        print(part1(data))
+        print(part2(data))
