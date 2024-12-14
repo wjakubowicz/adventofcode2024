@@ -1,7 +1,3 @@
-def read_map(file_path):
-    with open(file_path, 'r') as file:
-        return [list(map(int, line.strip())) for line in file]
-
 def find_starts(tmap):
     return [(i, j) for i in range(len(tmap)) for j in range(len(tmap[0])) if tmap[i][j] == 0]
 
@@ -36,11 +32,15 @@ def dfs(tmap, x, y, seen):
     return score
 
 def solve(file_path, search_func):
-    tmap = read_map(file_path)
+    with open(file_path, 'r') as file:
+        tmap = [list(map(int, line.strip())) for line in file]
     starts = find_starts(tmap)
     return sum(search_func(tmap, start) for start in starts)
 
-if __name__ == "__main__":
+def main():
     file_path = "advent10.txt"
     print(f"BFS Score: {solve(file_path, bfs)}")
     print(f"DFS Rating: {solve(file_path, lambda m, s: dfs(m, s[0], s[1], {s}))}")
+
+if __name__ == "__main__":
+    main()

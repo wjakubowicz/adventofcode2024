@@ -1,44 +1,38 @@
-def find_interference(data, check_path=False):
-    grid = [line.strip() for line in data]
-    rows, cols = len(grid), len(grid[0])
-    
-    # Group positions by symbol
-    symbols = {}
-    for r in range(rows):
-        for c in range(cols):
-            if grid[r][c] != '.':
-                symbols.setdefault(grid[r][c], []).append((r, c))
-
-    interference = set()
-    
-    for positions in symbols.values():
-        if len(positions) > 1:
+def find_interference(antenna_data, check_path=False):
+    antenna_grid = [line.strip() for line in antenna_data]
+    rows, cols = len(antenna_grid), len(antenna_grid[0])
+    frequency_map = {}
+    for row, line in enumerate(antenna_grid):
+        for col, symbol in enumerate(line):
+            if symbol != '.':
+                frequency_map.setdefault(symbol, []).append((row, col))
+    antinodes = set()
+    for antenna_positions in frequency_map.values():
+        if len(antenna_positions) > 1:
             if check_path:
-                interference.update(positions)  # Add antenna positions for part2
-                
-            for i, (r1, c1) in enumerate(positions):
-                for r2, c2 in positions[i+1:]:
-                    dr, dc = r2-r1, c2-c1
-                    
-                    for base_r, base_c, direction in [(r1,c1,-1), (r2,c2,1)]:
-                        curr_r, curr_c = base_r, base_c
-                        
+                antinodes.update(antenna_positions)
+            for i, (row1, col1) in enumerate(antenna_positions):
+                for row2, col2 in antenna_positions[i+1:]:
+                    delta_row, delta_col = row2 - row1, col2 - col1
+                    for base_row, base_col, direction_multiplier in [(row1, col1, -1), (row2, col2, 1)]:
+                        current_row, current_col = base_row + delta_row * direction_multiplier, base_col + delta_col * direction_multiplier
                         if check_path:
-                            while 0 <= curr_r < rows and 0 <= curr_c < cols:
-                                interference.add((curr_r, curr_c))
-                                curr_r += dr * direction
-                                curr_c += dc * direction
+                            while 0 <= current_row < rows and 0 <= current_col < cols:
+                                antinodes.add((current_row, current_col))
+                                current_row += delta_row * direction_multiplier
+                                current_col += delta_col * direction_multiplier
                         else:
-                            curr_r += dr * direction
-                            curr_c += dc * direction
-                            if 0 <= curr_r < rows and 0 <= curr_c < cols:
-                                interference.add((curr_r, curr_c))
+                            if 0 <= current_row < rows and 0 <= current_col < cols:
+                                antinodes.add((current_row, current_col))
+    return len(antinodes)
 
-    return len(interference)
+def main():
+    with open('advent08.txt') as f:
+        antenna_data = f.readlines()
+    part_one_result = find_interference(antenna_data)
+    part_two_result = find_interference(antenna_data, True)
+    print(f"Part 1 - Number of interference points: {part_one_result}")
+    print(f"Part 2 - Number of antinodes: {part_two_result}")
 
 if __name__ == "__main__":
-    with open('advent08.txt') as f:
-        data = f.readlines()
-    
-    print(f"Part 1 - Number of interference points: {find_interference(data)}")
-    print(f"Part 2 - Number of antinodes: {find_interference(data, True)}")
+    main()
